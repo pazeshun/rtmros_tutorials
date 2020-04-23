@@ -42,10 +42,14 @@ r_client = actionlib.SimpleActionClient('/rarm_controller/follow_joint_trajector
 l_client = actionlib.SimpleActionClient('/larm_controller/follow_joint_trajectory_action', FollowJointTrajectoryAction)
 h_client = actionlib.SimpleActionClient('/head_controller/follow_joint_trajectory_action', FollowJointTrajectoryAction)
 c_client = actionlib.SimpleActionClient('/torso_controller/follow_joint_trajectory_action', FollowJointTrajectoryAction)
+lh_client = actionlib.SimpleActionClient('/lhand_controller/follow_joint_trajectory_action', FollowJointTrajectoryAction)
+rh_client = actionlib.SimpleActionClient('/rhand_controller/follow_joint_trajectory_action', FollowJointTrajectoryAction)
 r_client.wait_for_server()
 l_client.wait_for_server()
 h_client.wait_for_server()
 c_client.wait_for_server()
+lh_client.wait_for_server()
+rh_client.wait_for_server()
 
 # gen msg
 r_msg = FollowJointTrajectoryGoal()
