@@ -28,6 +28,8 @@
   <run_depend>nextage_ros_bridge</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>tf</run_depend>
+  <run_depend>pr2_mechanism_controllers</run_depend>
+  <run_depend>robot_mechanism_controllers</run_depend>
 
   <export>
   	<rosdoc config="rosdoc.yaml" />
