@@ -144,3 +144,5 @@
 
   (:head_camera-depth (&rest args) (forward-message-to head_camera-depth args))
   (:head_camera-rgb (&rest args) (forward-message-to head_camera-rgb args)))
+
+(provide :hironxjsk-utils)
