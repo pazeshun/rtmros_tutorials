@@ -1,4 +1,4 @@
-(load "package://hrpsys_ros_bridge_tutorials/models/hironxjsk.l")
+(require :hironxjsk "package://hrpsys_ros_bridge_tutorials/models/hironxjsk.l")
 
 (defmethod hironxjsk-robot
   (:init-ending
