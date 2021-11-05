@@ -11,7 +11,9 @@
 
 ;; Initialize
 (defmethod hironxjsk-interface
-  (:init (&rest args &key (type nil) (joint-states-queue-size 2) &allow-other-keys)
+  (:init
+    (&rest args &key (type nil) (robot hironxjsk-robot) (joint-states-queue-size 2)
+           &allow-other-keys)
     ;; If gazebo with ros_control, overwrite :default-controller
     (setq on-gazebo-ros-control
           (and (ros::get-param "/gazebo/time_step" nil)
@@ -23,7 +25,7 @@
       ;; Hironx has two types of joint_states on one topic: whole body and hand,
       ;; so queue size of joint_states should be two.
       ;; https://github.com/jsk-ros-pkg/jsk_pr2eus/blob/0.3.13/pr2eus/robot-interface.l#L120
-      (send-super* :init :joint-states-queue-size joint-states-queue-size :robot hironxjsk-robot :type
+      (send-super* :init :joint-states-queue-size joint-states-queue-size :robot robot :type
                    (cond (type type)
                          (on-gazebo-ros-control :gazebo-ros-controller)
                          (t :default-controller))
