@@ -12,10 +12,6 @@
 ;; Initialize
 (defmethod hironxjsk-interface
   (:init (&rest args &key (type nil) &allow-other-keys)
-    (setq robot (instance hironxjsk-robot :init))
-    ;; Define {limb}-controller, usually we can define manually as jsk_robots
-    (dolist (limb '(:rarm :larm :head :torso))
-      (send self :def-limb-controller-method limb))
     ;; If gazebo with ros_control, overwrite :default-controller
     (setq on-gazebo-ros-control
           (and (ros::get-param "/gazebo/time_step" nil)
@@ -27,7 +23,7 @@
       ;; Hironx has two types of joint_states on one topic: whole body and hand,
       ;; so queue size of joint_states should be two.
       ;; https://github.com/jsk-ros-pkg/jsk_pr2eus/blob/0.3.13/pr2eus/robot-interface.l#L120
-      (send-super* :init :joint-states-queue-size 2 :robot robot :type
+      (send-super* :init :joint-states-queue-size 2 :robot hironxjsk-robot :type
                    (cond (type type)
                          (on-gazebo-ros-control :gazebo-ros-controller)
                          (t :default-controller))
@@ -65,6 +61,41 @@
      (send self :larm-controller)
      (send self :head-controller)
      (send self :torso-controller)))
+  ;; Define {limb}-controller manually to make it overwritable
+  (:rarm-controller ()
+    (list
+      (list
+        (cons :group-name "rarm")
+        (cons :controller-action "rarm_controller/follow_joint_trajectory_action")
+        (cons :controller-state "rarm_controller/state")
+        (cons :action-type control_msgs::FollowJointTrajectoryAction)
+        (cons :joint-names
+              (list "RARM_JOINT0" "RARM_JOINT1" "RARM_JOINT2" "RARM_JOINT3" "RARM_JOINT4" "RARM_JOINT5")))))
+  (:larm-controller ()
+    (list
+      (list
+        (cons :group-name "larm")
+        (cons :controller-action "larm_controller/follow_joint_trajectory_action")
+        (cons :controller-state "larm_controller/state")
+        (cons :action-type control_msgs::FollowJointTrajectoryAction)
+        (cons :joint-names
+              (list "LARM_JOINT0" "LARM_JOINT1" "LARM_JOINT2" "LARM_JOINT3" "LARM_JOINT4" "LARM_JOINT5")))))
+  (:head-controller ()
+    (list
+      (list
+        (cons :group-name "head")
+        (cons :controller-action "head_controller/follow_joint_trajectory_action")
+        (cons :controller-state "head_controller/state")
+        (cons :action-type control_msgs::FollowJointTrajectoryAction)
+        (cons :joint-names (list "HEAD_JOINT0" "HEAD_JOINT1")))))
+  (:torso-controller ()
+    (list
+      (list
+        (cons :group-name "torso")
+        (cons :controller-action "torso_controller/follow_joint_trajectory_action")
+        (cons :controller-state "torso_controller/state")
+        (cons :action-type control_msgs::FollowJointTrajectoryAction)
+        (cons :joint-names (list "CHEST_JOINT0")))))
   (:call-operation-return (method &rest args)
     ;; Call method until it returns true
     ;; Used to ensure operation on the hand service calls, that sometimes fail
